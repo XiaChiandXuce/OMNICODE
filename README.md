@@ -2,13 +2,14 @@
 An Omniscient AI Compiler IDE built on the IntelliJ Platform. Designed for enterprise-grade development, combining advanced language analysis, intelligent refactoring, AI agents, and secure model orchestration. For developers who demand precision and power.基于 IntelliJ 平台构建的全能 AI 编译器 IDE。面向企业级开发者，融合高级语言分析、智能重构、AI 多代理系统与安全的模型编排，专为追求精准与极致控制力的开发者而生。
 ![ChatGPT Image 2025年6月22日 10_16_26](https://github.com/user-attachments/assets/e0134657-e861-49ff-a4db-c4b2cc93e2c2)
 
-Below is a JetBrains-style mono-repo layout for OMNICODE, aligned with the IntelliJ Platform (intellij-community) conventions but trimmed and enriched for an AI-native IDE.
-(English first, 中文在后)
+Below is a **JetBrains-style mono-repo layout** for **OMNICODE**, aligned with the IntelliJ Platform (intellij-community) conventions but trimmed and enriched for an AI-native IDE.
+*(English first, 中文在后)*
 
-1. Top-level tree (English)
-graphql
-复制
-编辑
+---
+
+## 1. Top-level tree (English)
+
+```
 OMNICODE/
 ├─ .github/               # Workflows, issue templates, discussions
 ├─ buildSrc/              # Gradle build logic, Kotlin DSL, shared plugins
@@ -33,34 +34,37 @@ OMNICODE/
 ├─ gradle.properties
 ├─ settings.gradle.kts
 └─ README.md
-Key design choices
-Folder	Purpose & relation to intellij-community
-PLATFORM/	Clean submodule of JetBrains CE; never edit directly.
-omniplatform/	Thin bridge layer – branding (logo, splash), product info, license tweaks, custom VM options, launcher patches.
-plugins/	Each AI capability shipped as a stand-alone IntelliJ plugin; loaded via product.xml.
-ai-engine/	Pure Kotlin lib for model calls; shared with NEXAIDE via Gradle “included build”.
-agents/	Coroutines + Flow orchestrators; compile, run tests, loop on fail.
-buildSrc/	Gradle convention plugins (idea, intellij-plugin, shadow, protobuf, detekt).
-server/	Ktor app exposing /chat, /completion, /embedding; can be Docker-ised.
+```
 
-2. Gradle multi-project layout
-Root settings.gradle.kts includes:
-PLATFORM, omniplatform, every sub-plugin, ai-engine, agents, server.
+### Key design choices
 
-gradle.properties pins JetBrains Runtime 17 & IntelliJ SDK version.
+| Folder          | Purpose & relation to intellij-community                                                                            |
+| --------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `PLATFORM/`     | Clean **submodule** of JetBrains CE; never edit directly.                                                           |
+| `omniplatform/` | Thin **bridge layer** – branding (logo, splash), product info, license tweaks, custom VM options, launcher patches. |
+| `plugins/`      | Each AI capability shipped as a **stand-alone IntelliJ plugin**; loaded via `product.xml`.                          |
+| `ai-engine/`    | Pure Kotlin lib for model calls; shared with NEXAIDE via Gradle “included build”.                                   |
+| `agents/`       | Coroutines + Flow orchestrators; compile, run tests, loop on fail.                                                  |
+| `buildSrc/`     | Gradle convention plugins (`idea`, `intellij-plugin`, shadow, protobuf, detekt).                                    |
+| `server/`       | Ktor app exposing `/chat`, `/completion`, `/embedding`; can be Docker-ised.                                         |
 
-buildSrc/ adds tasks:
+---
 
-patchProductInfo – rewrite product name/icon.
+## 2. Gradle multi-project layout
 
-syncPlatform – pull latest intellij-community & rebase patchset.
+* Root `settings.gradle.kts` **includes**:
+  `PLATFORM`, `omniplatform`, every sub-plugin, `ai-engine`, `agents`, `server`.
+* `gradle.properties` pins **JetBrains Runtime 17** & IntelliJ SDK version.
+* `buildSrc/` adds tasks:
+* `patchProductInfo` – rewrite product name/icon.
+* `syncPlatform` – pull latest intellij-community & rebase patchset.
+* `runOmniIDE` – launches IDE with all AI plugins + sandbox.
 
-runOmniIDE – launches IDE with all AI plugins + sandbox.
+---
 
-3. Quick build & run
-bash
-复制
-编辑
+## 3. Quick build & run
+
+```bash
 # clone with submodule
 git clone --recurse-submodules https://github.com/XiaChiandXuce/OMNICODE.git
 cd OMNICODE
@@ -70,21 +74,28 @@ cd OMNICODE
 
 # build all installers
 ./gradlew buildAllDistribution
-Requirements: JDK 17+, 16 GB RAM (parallel compilation), ~20 GB disk.
+```
 
-4. Roadmap snippet (syncs with NEXAIDE)
-Milestone	Core tasks
-P0 Bootstrap	Submodule intellij-community; branding pass
-P1 AI MVP	omnichat + omnicomplete using ai-engine
-P2 Agent Loop	agents/autofix integrated with JUnit runner
-P3 Deep Refactor	PSI-aware AI refactorings, rename, extract
-P4 Secure Routing	On-prem LLM gateway, token audit
-P5 Shared Core	Publish ai-engine to Maven; reused by NEXAIDE
+> **Requirements**: JDK 17+, 16 GB RAM (parallel compilation), \~20 GB disk.
 
-2. 中文版目录与说明
-bash
-复制
-编辑
+---
+
+## 4. Roadmap snippet (syncs with NEXAIDE)
+
+| Milestone             | Core tasks                                    |
+| --------------------- | --------------------------------------------- |
+| **P0 Bootstrap**      | Submodule intellij-community; branding pass   |
+| **P1 AI MVP**         | `omnichat` + `omnicomplete` using ai-engine   |
+| **P2 Agent Loop**     | `agents/autofix` integrated with JUnit runner |
+| **P3 Deep Refactor**  | PSI-aware AI refactorings, rename, extract    |
+| **P4 Secure Routing** | On-prem LLM gateway, token audit              |
+| **P5 Shared Core**    | Publish ai-engine to Maven; reused by NEXAIDE |
+
+---
+
+# 2. 中文版目录与说明
+
+```
 OMNICODE/
 ├─ .github/            # CI/CD、ISSUE 模板
 ├─ buildSrc/           # Gradle 脚本与公共插件
@@ -101,25 +112,30 @@ OMNICODE/
 ├─ docs/               # 文档、架构决策 ADR
 ├─ scripts/            # 同步社区源码、打包脚本
 └─ ...
-构建与运行
-bash
-复制
-编辑
+```
+
+### 构建与运行
+
+```bash
 git clone --recurse-submodules https://github.com/XiaChiandXuce/OMNICODE.git
 cd OMNICODE
 ./gradlew runIde   # 开发模式，自动打开沙盒 IDE
-最低 JDK17，建议 16 GB 内存。
+```
 
-打包安装包：./gradlew buildAllDistribution （可加 -PtargetOS=current）。
+* **最低 JDK17**，建议 16 GB 内存。
+* 打包安装包：`./gradlew buildAllDistribution` （可加 `-PtargetOS=current`）。
 
-决策亮点
-子模块隔离：官方社区源码不改动，方便拉取上游。
+---
 
-AI 能力插件化：遵循 JetBrains 市场生态，允许企业按需启用。
+## 决策亮点
 
-双 IDE 共享：ai-engine 作为独立 Kotlin Lib，与 NEXAIDE 共用，统一模型与 Prompt 逻辑。
+* **子模块隔离**：官方社区源码不改动，方便拉取上游。
+* **AI 能力插件化**：遵循 JetBrains 市场生态，允许企业按需启用。
+* **双 IDE 共享**：`ai-engine` 作为独立 Kotlin Lib，与 NEXAIDE 共用，统一模型与 Prompt 逻辑。
+* **安全可控**：企业可部署 `server/` 网关，管控模型密钥与访问日志。
 
-安全可控：企业可部署 server/ 网关，管控模型密钥与访问日志。
+---
+
 
 ````markdown
 <!--
